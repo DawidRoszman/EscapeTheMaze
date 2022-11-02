@@ -1,3 +1,17 @@
+import pygame as pg
+import pygame.display
+
+pg.init()
+
+# constant values
+WIDTH, HEIGHT = 640, 480
+FPS = 60
+
+screen = pg.display.set_mode((WIDTH, HEIGHT))
+pg.display.set_caption("Escape The Maze")
+clock = pg.time.Clock()
+
+
 def print_array(array):
     for i in array:
         for j in i:
@@ -5,15 +19,14 @@ def print_array(array):
         print("\n")
 
 
-def get_input() -> tuple[int, int]:
-    x = input("Choose direction(['w' - up] ['s' - down] ['d' - right] ['a' - left]):  ")
-    if x == "w":
+def get_input(input_key) -> tuple[int, int]:
+    if input_key == "w":
         return -1, 0
-    elif x == "d":
+    elif input_key == "d":
         return 0, 1
-    elif x == "s":
+    elif input_key == "s":
         return 1, 0
-    elif x == "a":
+    elif input_key == "a":
         return 0, -1
     else:
         return 0, 0
@@ -30,12 +43,13 @@ class Player:
         if x == 0:
             array[new_player_pos[0]][new_player_pos[1]] = 2
             array[player_position[0]][player_position[1]] = 0
+            self.change_player_position(new_player_pos)
         if x == 3:
+            self.change_player_position(new_player_pos)
             print("Congrats you won")
             return False
         if x == 1:
             return array
-        self.change_player_position(new_player_pos)
         return array
 
     def change_player_position(self, new_player_pos):
@@ -60,13 +74,38 @@ def main():
     turns_left = 20
 
     while turns_left > 0:
-        print("Turns: ", turns_left)
-        print_array(lab)
-        current_move_dir = get_input()
-        if not player.move_player(lab, current_move_dir, player.get_current_position()):
-            break
-        lab = player.move_player(lab, current_move_dir, player.get_current_position())
-        turns_left -= 1
+
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                raise SystemExit
+            if event.type == pg.KEYDOWN:
+                current_move_dir = get_input(chr(event.key))
+                player_move = player.move_player(lab, current_move_dir, player.get_current_position())
+                if not player_move:
+                    break
+                lab = player_move
+                turns_left -= 1
+
+        screen.fill("white")
+        for i in range(7):
+            for j in range(7):
+                if lab[j][i] == 0:
+                    color = "black"
+                elif lab[j][i] == 1:
+                    color = "brown"
+                elif lab[j][i] == 2:
+                    color = "blue"
+                else:
+                    color = "yellow"
+                pg.draw.rect(screen, color, pygame.Rect(((WIDTH/7)*i+1, HEIGHT/7*j+1), (WIDTH/7-2, HEIGHT/7-2)))
+        pygame.display.flip()
+        clock.tick(FPS)
+
+        # print("Turns: ", turns_left)
+        # print_array(lab)
+        # current_move_dir = get_input()
+
 
     if turns_left <= 0:
         print("You failed!")
