@@ -34,21 +34,21 @@ def get_input(input_key) -> tuple[int, int]:
 
 class Text:
     def __init__(self, text, pos):
-        self.text = text
-        self.pos = pos
-        self.font = pg.font.SysFont("Roboto", 24)
-        self.text_to_render = self.font.render(text, True, "black")
-        self.rect = self.text_to_render.get_rect()
-        self.rect.center = pos
+        self._text = text
+        self._pos = pos
+        self._font = pg.font.SysFont("Roboto", 24)
+        self._text_to_render = self._font.render(text, True, "black")
+        self._rect = self._text_to_render.get_rect()
+        self._rect.center = self._pos
     
     def render_to_screen(self, screen):
-        screen.blit(self.text_to_render, self.rect)
+        screen.blit(self._text_to_render, self._rect)
     
     def change_text(self, new_text):
-        self.text = new_text
-        self.text_to_render = self.font.render(new_text, True, "black")
-        self.rect = self.text_to_render.get_rect()
-        self.rect.center = self.pos
+        self._text = new_text
+        self._text_to_render = self._font.render(new_text, True, "black")
+        self._rect = self._text_to_render.get_rect()
+        self._rect.center = self._pos
 
 
 class Player:
@@ -78,9 +78,13 @@ class Player:
         return self.player_pos
 
 
-def main():
-    player = Player((1, 1))
-    lab = [
+class MainGame:
+    def __init__(self, screen, WIDTH, HEIGHT):
+        self._screen = screen
+        self._WIDTH = WIDTH
+        self._HEIGHT = HEIGHT
+        self._player = Player((1, 1))
+        self._lab = [
         [1, 1, 1, 1, 1, 1, 1],
         [1, 2, 1, 0, 0, 0, 1],
         [1, 0, 1, 0, 1, 1, 1],
@@ -89,47 +93,56 @@ def main():
         [1, 0, 0, 0, 1, 3, 1],
         [1, 1, 1, 1, 1, 1, 1],
     ]
-    turns_left = 20
-    turns_left_text = Text(f"TurnsLeft: {turns_left}", (WIDTH/2, 20))
+        self._turns_left = 20
+        self._turns_left_text = Text(f"TurnsLeft: {self._turns_left}", (WIDTH/2, 20))
 
-    while turns_left > 0:
+    def detect_key_down(self, event):
+        if event.type == pg.KEYDOWN:
+            current_move_dir = get_input(chr(event.key))
+            player_move = self._player.move_player(self._lab, current_move_dir, self._player.get_current_position())
+            if not player_move:
+                return "won"
+            self._lab = player_move
+            self._turns_left -= 1
+            self._turns_left_text.change_text(f"TurnsLeft: {self._turns_left}")
 
+            self._screen.fill("white")
+        for i in range(7):
+            for j in range(7):
+                if self._lab[j][i] == 0:
+                    color = "black"
+                elif self._lab[j][i] == 1:
+                    color = "brown"
+                elif self._lab[j][i] == 2:
+                    color = "blue"
+                else:
+                    color = "yellow"
+                pg.draw.rect(self._screen, color, pygame.Rect(((self._WIDTH/len(self._lab))*i+1, self._HEIGHT/len(self._lab)*j+1), (self._WIDTH/len(self._lab)-2, self._HEIGHT/7-2)))
+        self._turns_left_text.render_to_screen(self._screen)
+
+def end_of_game():
+    pass
+
+
+def main():
+    game_state = "main"
+    running = True
+    won_text = Text("You won", (WIDTH/2, HEIGHT/2))
+    main_game = MainGame(screen, WIDTH, HEIGHT)
+    while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 raise SystemExit
-            if event.type == pg.KEYDOWN:
-                current_move_dir = get_input(chr(event.key))
-                player_move = player.move_player(lab, current_move_dir, player.get_current_position())
-                if not player_move:
-                    break
-                lab = player_move
-                turns_left -= 1
-                turns_left_text.change_text(f"TurnsLeft: {turns_left}")
-
-        screen.fill("white")
-        for i in range(7):
-            for j in range(7):
-                if lab[j][i] == 0:
-                    color = "black"
-                elif lab[j][i] == 1:
-                    color = "brown"
-                elif lab[j][i] == 2:
-                    color = "blue"
-                else:
-                    color = "yellow"
-                pg.draw.rect(screen, color, pygame.Rect(((WIDTH/7)*i+1, HEIGHT/7*j+1), (WIDTH/7-2, HEIGHT/7-2)))
-        turns_left_text.render_to_screen(screen)
+            if game_state == "main": 
+                temp_state = main_game.detect_key_down(event)
+                if temp_state == "won":
+                    game_state = temp_state
         pygame.display.flip()
+        if game_state == "won":
+            screen.fill("white")
+            won_text.render_to_screen(screen)
         clock.tick(FPS)
-
-        # print("Turns: ", turns_left)
-        # print_array(lab)
-        # current_move_dir = get_input()
-
-
-    if turns_left <= 0:
-        print("You failed!")
 
 
 if "__main__" == __name__:
