@@ -6,6 +6,15 @@ pg.init()
 # constant values
 WIDTH, HEIGHT = 640, 480
 FPS = 60
+BASE_MAZE =  [
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 2, 1, 0, 0, 0, 1],
+        [1, 0, 1, 0, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 1],
+        [1, 0, 1, 1, 1, 0, 1],
+        [1, 0, 0, 0, 1, 3, 1],
+        [1, 1, 1, 1, 1, 1, 1],
+    ]
 
 screen = pg.display.set_mode((WIDTH, HEIGHT))
 pg.display.set_caption("Escape The Maze")
@@ -78,20 +87,12 @@ class Player:
 
 
 class MainGame:
-    def __init__(self, screen, WIDTH, HEIGHT):
+    def __init__(self, screen, WIDTH, HEIGHT, BASE_MAZE):
         self._screen = screen
         self._WIDTH = WIDTH
         self._HEIGHT = HEIGHT
         self._player = Player((1, 1))
-        self._lab = [
-        [1, 1, 1, 1, 1, 1, 1],
-        [1, 2, 1, 0, 0, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 1],
-        [1, 0, 1, 1, 1, 0, 1],
-        [1, 0, 0, 0, 1, 3, 1],
-        [1, 1, 1, 1, 1, 1, 1],
-    ]
+        self._maze = BASE_MAZE.copy()
         self._turns_left = 20
         self._turns_left_text = Text(f"TurnsLeft: {self._turns_left}", (WIDTH/2, 20), 64)
 
@@ -99,10 +100,10 @@ class MainGame:
         if event.type == pg.KEYDOWN:
             current_move_dir = get_input(chr(event.key))
             temp_player_pos = self._player.get_current_position()
-            player_move = self._player.move_player(self._lab, current_move_dir, self._player.get_current_position())
+            player_move = self._player.move_player(self._maze, current_move_dir, self._player.get_current_position())
             if not player_move:
                 return "won"
-            self._lab = player_move
+            self._maze = player_move
             if self._player.get_current_position() != temp_player_pos:
                 self._turns_left -= 1
             if self._turns_left <= 0:
@@ -112,28 +113,30 @@ class MainGame:
             self._screen.fill("white")
         for i in range(7):
             for j in range(7):
-                if self._lab[j][i] == 0:
+                if self._maze[j][i] == 0:
                     color = "black"
-                elif self._lab[j][i] == 1:
+                elif self._maze[j][i] == 1:
                     color = "brown"
-                elif self._lab[j][i] == 2:
+                elif self._maze[j][i] == 2:
                     color = "blue"
                 else:
                     color = "yellow"
-                pg.draw.rect(self._screen, color, pygame.Rect(((self._WIDTH/len(self._lab))*i+1, self._HEIGHT/len(self._lab)*j+1), (self._WIDTH/len(self._lab)-2, self._HEIGHT/7-2)))
+                pg.draw.rect(self._screen, color, pygame.Rect(((self._WIDTH/len(self._maze))*i+1, self._HEIGHT/len(self._maze)*j+1), (self._WIDTH/len(self._maze)-2, self._HEIGHT/7-2)))
         self._turns_left_text.render_to_screen(self._screen)
 
-def end_of_game():
-    pass
+def render_end_of_game(text):
+    lost_text = Text(text, (WIDTH/2, HEIGHT/2))
+    screen.fill("white")
+    lost_text.render_to_screen(screen)
 
+def restart_game():
+    return "main", MainGame(screen, WIDTH, HEIGHT, BASE_MAZE)
 
 def main():
     game_state = "main"
     running = True
     screen.fill("white")
-    won_text = Text("You won", (WIDTH/2, HEIGHT/2))
-    lost_text = Text("You lost", (WIDTH/2, HEIGHT/2))
-    main_game = MainGame(screen, WIDTH, HEIGHT)
+    main_game = MainGame(screen, WIDTH, HEIGHT, BASE_MAZE)
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -145,11 +148,9 @@ def main():
                     game_state = temp_state
         pygame.display.flip()
         if game_state == "won":
-            screen.fill("white")
-            won_text.render_to_screen(screen)
+            render_end_of_game(f"You won! Turns left: {main_game._turns_left}")
         if game_state == "lost":
-            screen.fill("white")
-            lost_text.render_to_screen(screen)
+            render_end_of_game("You lost!")
         clock.tick(FPS)
 
 
