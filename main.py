@@ -124,7 +124,7 @@ class MainGame:
                 else:
                     color = "yellow"
                 pg.draw.rect(self._screen, color, pg.Rect(((self._WIDTH/len(self._maze))*i+1,
-                             self._HEIGHT/len(self._maze)*j+1), (self._WIDTH/len(self._maze)-2, self._HEIGHT/7-2)))
+                            self._HEIGHT/len(self._maze)*j+1), (self._WIDTH/len(self._maze)-2, self._HEIGHT/7-2)))
         self._turns_left_text.render_to_screen(self._screen)
 
 
