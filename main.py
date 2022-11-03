@@ -33,7 +33,7 @@ def get_input(input_key) -> tuple[int, int]:
 
 
 class Text:
-    def __init__(self, text, pos):
+    def __init__(self, text, pos, size=24, font="Roboto"):
         self._text = text
         self._pos = pos
         self._font = pg.font.SysFont("Roboto", 24)
@@ -65,7 +65,6 @@ class Player:
             self.change_player_position(new_player_pos)
         if x == 3:
             self.change_player_position(new_player_pos)
-            print("Congrats you won")
             return False
         if x == 1:
             return array
@@ -94,16 +93,20 @@ class MainGame:
         [1, 1, 1, 1, 1, 1, 1],
     ]
         self._turns_left = 20
-        self._turns_left_text = Text(f"TurnsLeft: {self._turns_left}", (WIDTH/2, 20))
+        self._turns_left_text = Text(f"TurnsLeft: {self._turns_left}", (WIDTH/2, 20), 64)
 
     def detect_key_down(self, event):
         if event.type == pg.KEYDOWN:
             current_move_dir = get_input(chr(event.key))
+            temp_player_pos = self._player.get_current_position()
             player_move = self._player.move_player(self._lab, current_move_dir, self._player.get_current_position())
             if not player_move:
                 return "won"
             self._lab = player_move
-            self._turns_left -= 1
+            if self._player.get_current_position() != temp_player_pos:
+                self._turns_left -= 1
+            if self._turns_left <= 0:
+                return "lost"
             self._turns_left_text.change_text(f"TurnsLeft: {self._turns_left}")
 
             self._screen.fill("white")
@@ -127,7 +130,9 @@ def end_of_game():
 def main():
     game_state = "main"
     running = True
+    screen.fill("white")
     won_text = Text("You won", (WIDTH/2, HEIGHT/2))
+    lost_text = Text("You lost", (WIDTH/2, HEIGHT/2))
     main_game = MainGame(screen, WIDTH, HEIGHT)
     while running:
         for event in pg.event.get():
@@ -136,12 +141,15 @@ def main():
                 raise SystemExit
             if game_state == "main": 
                 temp_state = main_game.detect_key_down(event)
-                if temp_state == "won":
+                if type(temp_state) == str:
                     game_state = temp_state
         pygame.display.flip()
         if game_state == "won":
             screen.fill("white")
             won_text.render_to_screen(screen)
+        if game_state == "lost":
+            screen.fill("white")
+            lost_text.render_to_screen(screen)
         clock.tick(FPS)
 
 
