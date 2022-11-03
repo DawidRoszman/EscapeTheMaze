@@ -32,12 +32,31 @@ def get_input(input_key) -> tuple[int, int]:
         return 0, 0
 
 
+class Text:
+    def __init__(self, text, pos):
+        self.text = text
+        self.pos = pos
+        self.font = pg.font.SysFont("Roboto", 24)
+        self.text_to_render = self.font.render(text, True, "black")
+        self.rect = self.text_to_render.get_rect()
+        self.rect.center = pos
+    
+    def render_to_screen(self, screen):
+        screen.blit(self.text_to_render, self.rect)
+    
+    def change_text(self, new_text):
+        self.text = new_text
+        self.text_to_render = self.font.render(new_text, True, "black")
+        self.rect = self.text_to_render.get_rect()
+        self.rect.center = self.pos
+
+
 class Player:
 
     def __init__(self, player_pos):
         self.player_pos = player_pos
 
-    def move_player(self, array, move_dir, player_position) -> [list, tuple[int, int]]:
+    def move_player(self, array, move_dir, player_position):
         new_player_pos = (player_position[0] + move_dir[0], player_position[1] + move_dir[1])
         x = array[new_player_pos[0]][new_player_pos[1]]
         if x == 0:
@@ -61,7 +80,6 @@ class Player:
 
 def main():
     player = Player((1, 1))
-
     lab = [
         [1, 1, 1, 1, 1, 1, 1],
         [1, 2, 1, 0, 0, 0, 1],
@@ -72,6 +90,7 @@ def main():
         [1, 1, 1, 1, 1, 1, 1],
     ]
     turns_left = 20
+    turns_left_text = Text(f"TurnsLeft: {turns_left}", (WIDTH/2, 20))
 
     while turns_left > 0:
 
@@ -86,6 +105,7 @@ def main():
                     break
                 lab = player_move
                 turns_left -= 1
+                turns_left_text.change_text(f"TurnsLeft: {turns_left}")
 
         screen.fill("white")
         for i in range(7):
@@ -99,6 +119,7 @@ def main():
                 else:
                     color = "yellow"
                 pg.draw.rect(screen, color, pygame.Rect(((WIDTH/7)*i+1, HEIGHT/7*j+1), (WIDTH/7-2, HEIGHT/7-2)))
+        turns_left_text.render_to_screen(screen)
         pygame.display.flip()
         clock.tick(FPS)
 
