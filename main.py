@@ -4,10 +4,14 @@ from text import Text
 from colors import *
 from button import Button
 from maze_generator import generate_maze, find_shortest_path
+import sys
 pg.init()
 
 # constant values
-WIDTH, HEIGHT = 640, 640
+try:
+    WIDTH, HEIGHT = int(sys.argv[1]), int(sys.argv[1])
+except:
+    WIDTH, HEIGHT = 640, 640
 FPS = 60
 
 # colors
@@ -33,10 +37,10 @@ def main(maze_size):
     level_text = Text(f"Level: {maze_size//15}", (50, 20), 64)
     main_game = MainGame(screen, WIDTH, HEIGHT, maze, steps)
     restart_btn = Button(
-        "Restart", (WIDTH/2, HEIGHT/2+50), (WIDTH/4, HEIGHT/8))
+        "Restart", (WIDTH/2, HEIGHT*2//3), (WIDTH/4, HEIGHT/8))
     quit_btn = Button("Quit", (WIDTH-30, 15),
                       (60, 30))
-    next_btn = Button("Next", (WIDTH/2, HEIGHT/2+50), (WIDTH/4, HEIGHT/8))
+    next_btn = Button("Next", (WIDTH/2, HEIGHT*2/3), (WIDTH/4, HEIGHT/8))
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -56,12 +60,12 @@ def main(maze_size):
                     game_state = temp_state
             elif game_state == "won":
                 render_end_of_game(
-                    f"You won! Steps: {main_game._steps}")
+                    f"You won!")
                 next_btn.render_to_screen(screen)
                 quit_btn.render_to_screen(screen)
             elif game_state == "lost":
                 render_end_of_game(
-                    f"You lost! Steps: {main_game._steps}")
+                    f"You lost!")
                 restart_btn.render_to_screen(screen)
                 quit_btn.render_to_screen(screen)
             level_text.render_to_screen(screen)
