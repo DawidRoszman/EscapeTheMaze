@@ -29,8 +29,10 @@ def render_end_of_game(text):
 
 
 def main(maze_size):
-    maze = generate_maze(maze_size)
-    steps = find_shortest_path(maze)
+    steps = 0
+    while steps < maze_size*1.5:
+        maze = generate_maze(maze_size)
+        steps = find_shortest_path(maze)
     game_state = "main"
     running = True
     screen.fill(ORANGE)
