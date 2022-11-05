@@ -4,12 +4,12 @@ from text import Text
 from colors import *
 from button import Button
 from maze_generator import generate_maze, find_shortest_path
-import sys
 pg.init()
 
 # constant values
 try:
-    WIDTH, HEIGHT = int(sys.argv[1]), int(sys.argv[1])
+    res = input("Enter the resolution (example 1000 mean 1000x1000): ")
+    WIDTH, HEIGHT = int(res), int(res)
 except:
     WIDTH, HEIGHT = 640, 640
 FPS = 60
