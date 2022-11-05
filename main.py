@@ -7,7 +7,7 @@ from maze_generator import generate_maze, find_shortest_path
 pg.init()
 
 # constant values
-WIDTH, HEIGHT = 640, 480
+WIDTH, HEIGHT = 640, 640
 FPS = 60
 
 # colors
