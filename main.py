@@ -3,6 +3,7 @@ from game import MainGame
 from text import Text
 from colors import *
 from button import Button
+from maze_generator import generate_maze
 pg.init()
 
 # constant values
@@ -17,13 +18,6 @@ pg.display.set_caption("Escape The Maze")
 clock = pg.time.Clock()
 
 
-def print_array(array):
-    for i in array:
-        for j in i:
-            print(j, end=" ")
-        print("\n")
-
-
 def render_end_of_game(text):
     lost_text = Text(text, (WIDTH/2, HEIGHT/2))
     screen.fill("white")
@@ -31,18 +25,10 @@ def render_end_of_game(text):
 
 
 def main():
-    maze = [
-        [1, 1, 1, 1, 1, 1, 1],
-        [1, 2, 1, 0, 0, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 1],
-        [1, 0, 1, 1, 1, 0, 1],
-        [1, 0, 0, 0, 1, 3, 1],
-        [1, 1, 1, 1, 1, 1, 1],
-    ]
+    maze = generate_maze(120)
     game_state = "main"
     running = True
-    screen.fill(GREY)
+    screen.fill(ORANGE)
     main_game = MainGame(screen, WIDTH, HEIGHT, maze)
     restart_btn = Button(
         "Restart", (WIDTH/2, HEIGHT/2+50), (WIDTH/4, HEIGHT/8))
@@ -67,11 +53,7 @@ def main():
                     game_state = temp_state
             elif game_state == "won":
                 render_end_of_game(
-                    f"You won! Turns left: {main_game._turns_left}")
-                restart_btn.render_to_screen(screen)
-                quit_btn.render_to_screen(screen)
-            elif game_state == "lost":
-                render_end_of_game("You lost!")
+                    f"You won! Steps: {main_game._turns}")
                 restart_btn.render_to_screen(screen)
                 quit_btn.render_to_screen(screen)
         if new_game:
