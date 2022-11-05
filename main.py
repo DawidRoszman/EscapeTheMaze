@@ -8,7 +8,7 @@ pg.init()
 
 # constant values
 try:
-    res = input("Enter the resolution (example 1000 mean 1000x1000): ")
+    res = input("Enter the resolution (example 640 mean 640x640): ")
     WIDTH, HEIGHT = int(res), int(res)
 except:
     WIDTH, HEIGHT = 640, 640
@@ -55,6 +55,9 @@ def main(maze_size):
                     pg.quit()
                     raise SystemExit
             if game_state == "main":
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_r:
+                        return 0
                 temp_state = main_game.detect_key_down(event)
                 if type(temp_state) == str:
                     game_state = temp_state
