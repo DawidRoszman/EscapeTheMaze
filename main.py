@@ -34,7 +34,7 @@ def main(maze_size):
     while steps < maze_size*1.5:
         maze = generate_maze(maze_size)
         steps = find_shortest_path(maze)
-    steps += int(10*(maze_size//15)*0.4)
+    steps += int(10*(maze_size//15)*0.2)
     game_state = "main"
     running = True
     screen.fill(ORANGE)
