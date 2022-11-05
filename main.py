@@ -70,4 +70,5 @@ def main(maze_size):
 if "__main__" == __name__:
     maze_size = 10
     while True:
-        maze_size += main(maze_size)
+        count = main(maze_size)
+        maze_size += count if maze_size + count < 200 else 0
