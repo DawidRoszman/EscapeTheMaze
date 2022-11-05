@@ -30,6 +30,7 @@ def main(maze_size):
     game_state = "main"
     running = True
     screen.fill(ORANGE)
+    level_text = Text(f"Level: {maze_size//15}", (50, 20), 64)
     main_game = MainGame(screen, WIDTH, HEIGHT, maze, steps)
     restart_btn = Button(
         "Restart", (WIDTH/2, HEIGHT/2+50), (WIDTH/4, HEIGHT/8))
@@ -63,6 +64,7 @@ def main(maze_size):
                     f"You lost! Steps: {main_game._steps}")
                 restart_btn.render_to_screen(screen)
                 quit_btn.render_to_screen(screen)
+            level_text.render_to_screen(screen)
         pg.display.flip()
         clock.tick(FPS)
 
