@@ -3,6 +3,7 @@ from game import MainGame
 from text import Text
 from colors import *
 from button import Button
+from maze_generator import generate_maze, find_shortest_path
 pg.init()
 
 # constant values
@@ -17,47 +18,34 @@ pg.display.set_caption("Escape The Maze")
 clock = pg.time.Clock()
 
 
-def print_array(array):
-    for i in array:
-        for j in i:
-            print(j, end=" ")
-        print("\n")
-
-
 def render_end_of_game(text):
     lost_text = Text(text, (WIDTH/2, HEIGHT/2))
     screen.fill("white")
     lost_text.render_to_screen(screen)
 
 
-def main():
-    maze = [
-        [1, 1, 1, 1, 1, 1, 1],
-        [1, 2, 1, 0, 0, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 1],
-        [1, 0, 1, 1, 1, 0, 1],
-        [1, 0, 0, 0, 1, 3, 1],
-        [1, 1, 1, 1, 1, 1, 1],
-    ]
+def main(maze_size):
+    maze = generate_maze(maze_size)
+    steps = find_shortest_path(maze)
     game_state = "main"
     running = True
-    screen.fill(GREY)
-    main_game = MainGame(screen, WIDTH, HEIGHT, maze)
+    screen.fill(ORANGE)
+    main_game = MainGame(screen, WIDTH, HEIGHT, maze, steps)
     restart_btn = Button(
         "Restart", (WIDTH/2, HEIGHT/2+50), (WIDTH/4, HEIGHT/8))
     quit_btn = Button("Quit", (WIDTH-30, 15),
                       (60, 30))
-    new_game = False
+    next_btn = Button("Next", (WIDTH/2, HEIGHT/2+50), (WIDTH/4, HEIGHT/8))
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 raise SystemExit
             if event.type == pg.MOUSEBUTTONDOWN:
-                if restart_btn.on_click(pg.mouse.get_pos()):
-                    new_game = True
-                    break
+                if restart_btn.on_click(pg.mouse.get_pos()) and game_state == "lost":
+                    return 0
+                if next_btn.on_click(pg.mouse.get_pos()) and game_state == "won":
+                    return 15
                 if quit_btn.on_click(pg.mouse.get_pos()):
                     pg.quit()
                     raise SystemExit
@@ -67,19 +55,20 @@ def main():
                     game_state = temp_state
             elif game_state == "won":
                 render_end_of_game(
-                    f"You won! Turns left: {main_game._turns_left}")
-                restart_btn.render_to_screen(screen)
+                    f"You won! Steps: {main_game._steps}")
+                next_btn.render_to_screen(screen)
                 quit_btn.render_to_screen(screen)
             elif game_state == "lost":
-                render_end_of_game("You lost!")
+                render_end_of_game(
+                    f"You lost! Steps: {main_game._steps}")
                 restart_btn.render_to_screen(screen)
                 quit_btn.render_to_screen(screen)
-        if new_game:
-            break
         pg.display.flip()
         clock.tick(FPS)
 
 
 if "__main__" == __name__:
+    maze_size = 10
     while True:
-        main()
+        count = main(maze_size)
+        maze_size += count if maze_size + count < 200 else 0
