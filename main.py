@@ -62,6 +62,16 @@ def main(maze_size):
                 if quit_btn.on_click(pg.mouse.get_pos()):
                     pg.quit()
                     raise SystemExit
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_PERIOD:
+                    return 15
+                if event.key == pg.K_COMMA:
+                    return -15
+                if event.key == pg.K_RETURN:
+                    if game_state == "lost":
+                        return 0
+                    if game_state == "won":
+                        return 15
             if game_state == "main":
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_r:
@@ -69,6 +79,7 @@ def main(maze_size):
                     if event.key == pg.K_p:
                         draw_path(maze, path, screen, BLUE, WIDTH, HEIGHT)
                         return 0
+
                 temp_state = main_game.detect_key_down(event)
                 if type(temp_state) == str:
                     game_state = temp_state
@@ -96,4 +107,4 @@ if "__main__" == __name__:
     maze_size = 10
     while True:
         count = main(maze_size)
-        maze_size += count if maze_size + count <= 210 else 0
+        maze_size += count if maze_size + count <= 210 and maze_size + count >= 0 else 0
