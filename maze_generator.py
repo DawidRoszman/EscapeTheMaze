@@ -1,5 +1,7 @@
 from random import choice, randint
 import numpy as np
+import pygame as pg
+import time
 
 
 def generate_maze(size):
@@ -60,4 +62,13 @@ def find_shortest_path(maze):
         path_list.append(current)
         current = path[current]
     path_list.append(start)
-    return len(path_list[::-1])
+    return path_list[::-1]
+
+
+def draw_path(maze, path, screen, color, WIDTH, HEIGHT):
+    for step in path:
+        pg.draw.rect(screen, color, pg.Rect(((WIDTH//len(maze))*step[1],
+                                             HEIGHT//len(maze)*step[0]), (WIDTH//len(maze)-1, HEIGHT//len(maze)-1)))
+        pg.display.flip()
+        time.sleep(0.1)
+    time.sleep(1)

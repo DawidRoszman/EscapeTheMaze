@@ -3,7 +3,7 @@ from game import MainGame
 from text import Text
 from colors import *
 from button import Button
-from maze_generator import generate_maze, find_shortest_path
+from maze_generator import generate_maze, find_shortest_path, draw_path
 pg.init()
 
 # constant values
@@ -30,7 +30,8 @@ def render_end_of_game(text):
 
 def main(maze_size):
     maze = generate_maze(maze_size)
-    steps = find_shortest_path(maze)
+    path = find_shortest_path(maze)
+    steps = len(path)
     game_state = "main"
     running = True
     screen.fill(ORANGE)
@@ -58,6 +59,9 @@ def main(maze_size):
                 temp_state = main_game.detect_key_down(event)
                 if type(temp_state) == str:
                     game_state = temp_state
+            elif game_state == "show_path":
+                draw_path(maze, path, screen, "blue", WIDTH, HEIGHT)
+                game_state = "lost"
             elif game_state == "won":
                 render_end_of_game(
                     f"You won!")

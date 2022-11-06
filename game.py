@@ -42,7 +42,7 @@ class MainGame:
             if self._player.get_current_position() != temp_player_pos:
                 self._steps -= 1
             if self._steps == 0:
-                return "lost"
+                return "show_path"
             self._turns_left_text.change_text(f"Steps: {self._steps}")
 
             self._screen.fill(ORANGE)
