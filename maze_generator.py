@@ -4,7 +4,7 @@ import pygame as pg
 import time
 
 
-def generate_maze(size):
+def generate_maze(size, player_pos):
     maze = []
     for i in range(size):
         maze.append([])
@@ -14,7 +14,7 @@ def generate_maze(size):
         for j in range(1, size-1):
             maze[i][j] = 1
     # maze[1][1] = 2
-    step = (1, 1)
+    step = player_pos
     i = (size*(size//2))
     counter = 2
     direction = (randint(0, 1), choice([-1, 1]))
@@ -31,21 +31,19 @@ def generate_maze(size):
         if maze[new_step[0]][new_step[1]] != 4:
             step = new_step
             i -= 1
-    maze[1][1] = 2
+    maze[player_pos[0]][player_pos[1]] = 2
     maze[step[0]][step[1]] = 3
     return maze
 
 # find shortest path from 2 to 3 where 1 is wall and 0 is path
 
 
-def find_shortest_path(maze):
-    start = (1, 1)
+def find_shortest_path(maze, player_pos):
+    start = player_pos
     for i in range(len(maze)):
-        for j in range(len(maze[i])):
+        for j in range(len(maze)):
             if maze[i][j] == 3:
                 end = (i, j)
-            if maze[i][j] == 2:
-                start = (i, j)
     queue = [start]
     path = {start: None}
     while queue:

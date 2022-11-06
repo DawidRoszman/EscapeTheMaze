@@ -2,6 +2,7 @@ from player import Player
 from text import Text
 from colors import *
 import pygame as pg
+from random import randint
 
 
 def get_input(input_key):
@@ -18,12 +19,12 @@ def get_input(input_key):
 
 
 class MainGame:
-    def __init__(self, screen, WIDTH, HEIGHT, BASE_MAZE, required_steps):
+    def __init__(self, screen, WIDTH, HEIGHT, BASE_MAZE, required_steps, player):
         self._screen = screen
         self._WIDTH = WIDTH
         self._HEIGHT = HEIGHT
-        self._player = Player((1, 1))
         self._maze = BASE_MAZE[:]
+        self._player = player
         self._steps = required_steps
         self._turns_left_text = Text(
             f"Steps: {self._steps}", (WIDTH/2, 20), 32)

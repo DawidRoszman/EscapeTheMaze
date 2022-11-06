@@ -4,14 +4,17 @@ from text import Text
 from colors import *
 from button import Button
 from maze_generator import generate_maze, find_shortest_path, draw_path
+from player import Player
+from random import randint
 pg.init()
 
 # constant values
-try:
-    res = input("Enter the resolution (example 640 mean 640x640): ")
-    WIDTH, HEIGHT = int(res), int(res)
-except:
-    WIDTH, HEIGHT = 640, 640
+# try:
+#     res = input("Enter the resolution (example 640 mean 640x640): ")
+#     WIDTH, HEIGHT = int(res), int(res)
+# except:
+#     WIDTH, HEIGHT = 640, 640
+WIDTH, HEIGHT = 640, 640
 FPS = 60
 
 # colors
@@ -31,19 +34,22 @@ def render_end_of_game(text):
 def main(maze_size):
     # maze_size = 200
     steps = 0
+    player = Player(
+        (randint(2, maze_size-2), randint(2, maze_size-2)))
     while steps < maze_size*1.5:
-        maze = generate_maze(maze_size)
-        path = find_shortest_path(maze)
+        maze = generate_maze(
+            maze_size, player.get_current_position())
+        path = find_shortest_path(maze, player.get_current_position())
         steps = len(path)
     steps += int(10*(maze_size//15)*0.2)
     game_state = "main"
+    main_game = MainGame(screen, WIDTH, HEIGHT, maze, steps, player)
     running = True
     screen.fill(ORANGE)
     level_text = Text(f"Level: {maze_size//15}", (50, 20), 32)
     quick_restart_text = Text("'r' - quick restart",
                               (0, HEIGHT/10), center=False)
     restart_text = Text("'p' - restart", (0, HEIGHT/10+24), center=False)
-    main_game = MainGame(screen, WIDTH, HEIGHT, maze, steps)
     restart_btn = Button(
         "Restart", (WIDTH/2, HEIGHT*2//3), (WIDTH/4, HEIGHT/8))
     quit_btn = Button("Quit", (WIDTH-30, 15),
