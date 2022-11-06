@@ -39,7 +39,10 @@ def main(maze_size):
     game_state = "main"
     running = True
     screen.fill(ORANGE)
-    level_text = Text(f"Level: {maze_size//15}", (50, 20), 64)
+    level_text = Text(f"Level: {maze_size//15}", (50, 20), 32)
+    quick_restart_text = Text("'r' - quick restart",
+                              (0, HEIGHT/10), center=False)
+    restart_text = Text("'p' - restart", (0, HEIGHT/10+24), center=False)
     main_game = MainGame(screen, WIDTH, HEIGHT, maze, steps)
     restart_btn = Button(
         "Restart", (WIDTH/2, HEIGHT*2//3), (WIDTH/4, HEIGHT/8))
@@ -63,11 +66,16 @@ def main(maze_size):
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_r:
                         return 0
+                    if event.key == pg.K_p:
+                        draw_path(maze, path, screen, BLUE, WIDTH, HEIGHT)
+                        return 0
                 temp_state = main_game.detect_key_down(event)
                 if type(temp_state) == str:
                     game_state = temp_state
+                quick_restart_text.render_to_screen(screen)
+                restart_text.render_to_screen(screen)
             elif game_state == "show_path":
-                draw_path(maze, path, screen, "blue", WIDTH, HEIGHT)
+                draw_path(maze, path, screen, BLUE, WIDTH, HEIGHT)
                 game_state = "lost"
             elif game_state == "won":
                 render_end_of_game(

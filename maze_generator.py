@@ -39,6 +39,7 @@ def generate_maze(size):
 
 
 def find_shortest_path(maze):
+    start = (1, 1)
     for i in range(len(maze)):
         for j in range(len(maze[i])):
             if maze[i][j] == 3:

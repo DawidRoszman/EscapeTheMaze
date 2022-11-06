@@ -26,7 +26,7 @@ class MainGame:
         self._maze = BASE_MAZE[:]
         self._steps = required_steps
         self._turns_left_text = Text(
-            f"Steps: {self._steps}", (WIDTH/2, 20), 64)
+            f"Steps: {self._steps}", (WIDTH/2, 20), 32)
 
     def detect_key_down(self, event):
         if event.type == pg.KEYDOWN:
