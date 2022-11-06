@@ -71,5 +71,5 @@ def draw_path(maze, path, screen, color, WIDTH, HEIGHT):
         pg.draw.rect(screen, color, pg.Rect(((WIDTH//len(maze))*step[1],
                                              HEIGHT//len(maze)*step[0]), (WIDTH//len(maze)-1, HEIGHT//len(maze)-1)))
         pg.display.flip()
-        time.sleep(0.1)
+        time.sleep(0.05)
     time.sleep(1)
