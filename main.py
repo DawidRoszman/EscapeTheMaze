@@ -8,13 +8,12 @@ from player import Player
 from random import randint
 pg.init()
 
-# constant values
-# try:
-#     res = input("Enter the resolution (example 640 mean 640x640): ")
-#     WIDTH, HEIGHT = int(res), int(res)
-# except:
-#     WIDTH, HEIGHT = 640, 640
-WIDTH, HEIGHT = 640, 640
+constant values
+try:
+    res = input("Enter the resolution (example 640 mean 640x640): ")
+    WIDTH, HEIGHT = int(res), int(res)
+except:
+    WIDTH, HEIGHT = 640, 640
 FPS = 60
 
 # colors
