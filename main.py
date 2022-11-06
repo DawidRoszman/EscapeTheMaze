@@ -33,8 +33,8 @@ def main(maze_size):
     steps = 0
     while steps < maze_size*1.5:
         maze = generate_maze(maze_size)
-        path = len(path)
-        steps = find_shortest_path(maze)
+        path = find_shortest_path(maze)
+        steps = len(path)
     steps += int(10*(maze_size//15)*0.2)
     game_state = "main"
     running = True
