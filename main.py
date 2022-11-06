@@ -8,7 +8,7 @@ from player import Player
 from random import randint
 pg.init()
 
-constant values
+#constant values
 try:
     res = input("Enter the resolution (example 640 mean 640x640): ")
     WIDTH, HEIGHT = int(res), int(res)
