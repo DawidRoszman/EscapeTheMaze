@@ -8,7 +8,7 @@ pg.init()
 
 # constant values
 try:
-    res = input("Enter the resolution (example 1000 mean 1000x1000): ")
+    res = input("Enter the resolution (example 640 mean 640x640): ")
     WIDTH, HEIGHT = int(res), int(res)
 except:
     WIDTH, HEIGHT = 640, 640
@@ -29,9 +29,13 @@ def render_end_of_game(text):
 
 
 def main(maze_size):
-    maze = generate_maze(maze_size)
-    path = find_shortest_path(maze)
-    steps = len(path)
+    # maze_size = 200
+    steps = 0
+    while steps < maze_size*1.5:
+        maze = generate_maze(maze_size)
+        path = len(path)
+        steps = find_shortest_path(maze)
+    steps += int(10*(maze_size//15)*0.2)
     game_state = "main"
     running = True
     screen.fill(ORANGE)
@@ -56,6 +60,9 @@ def main(maze_size):
                     pg.quit()
                     raise SystemExit
             if game_state == "main":
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_r:
+                        return 0
                 temp_state = main_game.detect_key_down(event)
                 if type(temp_state) == str:
                     game_state = temp_state
@@ -81,4 +88,4 @@ if "__main__" == __name__:
     maze_size = 10
     while True:
         count = main(maze_size)
-        maze_size += count if maze_size + count < 200 else 0
+        maze_size += count if maze_size + count <= 210 else 0
