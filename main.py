@@ -40,7 +40,7 @@ def main(maze_size):
             maze_size, player.get_current_position())
         path = find_shortest_path(maze, player.get_current_position())
         steps = len(path)
-    steps += int(10*(maze_size//15)*0.2)
+    steps += int(1*(maze_size//15))
     game_state = "main"
     main_game = MainGame(screen, WIDTH, HEIGHT, maze, steps, player)
     running = True
