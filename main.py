@@ -54,6 +54,7 @@ def main(maze_size):
     quit_btn = Button("Quit", (WIDTH-30, 15),
                       (60, 30))
     next_btn = Button("Next", (WIDTH/2, HEIGHT*2/3), (WIDTH/4, HEIGHT/8))
+    btn_list = [restart_btn, quit_btn, next_btn]
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -104,6 +105,8 @@ def main(maze_size):
                 restart_btn.render_to_screen(screen)
                 quit_btn.render_to_screen(screen)
             level_text.render_to_screen(screen)
+        for btn in btn_list:
+            btn.on_hover(pg.mouse.get_pos())
         pg.display.flip()
         clock.tick(FPS)
 

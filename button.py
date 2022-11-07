@@ -25,8 +25,11 @@ class Button:
 
     def on_click(self, mouse_pos):
         if self._btn_rect.collidepoint(mouse_pos):
-            self.change_color(ORANGE)
             return True
         else:
-            self.change_color(GREY)
             return False
+    def on_hover(self, mouse_pos):
+        if self._btn_rect.collidepoint(mouse_pos):
+            self.change_color(ORANGE)
+        else:
+            self.change_color(GREY)
