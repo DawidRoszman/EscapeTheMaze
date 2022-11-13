@@ -1,11 +1,9 @@
-from player import Player
 from text import Text
 from colors import *
 import pygame as pg
-from random import randint
 
 
-def get_input(input_key):
+def get_input(input_key: str) -> tuple:
     if input_key == "w":
         return -1, 0
     elif input_key == "d":
@@ -19,24 +17,32 @@ def get_input(input_key):
 
 
 class MainGame:
-    def __init__(self, screen, WIDTH, HEIGHT, BASE_MAZE, required_steps, player):
+    def __init__(
+        self,
+        screen,
+        WIDTH: int,
+        HEIGHT: int,
+        BASE_MAZE: list,
+        required_steps: int,
+        player,
+    ):
         self._screen = screen
         self._WIDTH = WIDTH
         self._HEIGHT = HEIGHT
         self._maze = BASE_MAZE[:]
         self._player = player
         self._steps = required_steps
-        self._turns_left_text = Text(
-            f"Steps: {self._steps}", (WIDTH/2, 20), 32)
+        self._turns_left_text = Text(f"Steps: {self._steps}", (WIDTH / 2, 20), 32)
 
-    def detect_key_down(self, event):
+    def detect_key_down(self, event) -> str | None:
         if event.type == pg.KEYDOWN:
             if event.key not in [97, 119, 100, 115]:
                 return
             current_move_dir = get_input(chr(event.key))
             temp_player_pos = self._player.get_current_position()
             player_move = self._player.move_player(
-                self._maze, current_move_dir, self._player.get_current_position())
+                self._maze, current_move_dir, self._player.get_current_position()
+            )
             if not player_move:
                 return "won"
             self._maze = player_move
@@ -57,6 +63,18 @@ class MainGame:
                     color = GREEN
                 else:
                     color = "black"
-                pg.draw.rect(self._screen, color, pg.Rect(((self._WIDTH//len(self._maze))*i,
-                                                           self._HEIGHT//len(self._maze)*j), (self._WIDTH//len(self._maze)-1, self._HEIGHT//len(self._maze)-1)))
+                pg.draw.rect(
+                    self._screen,
+                    color,
+                    pg.Rect(
+                        (
+                            (self._WIDTH // len(self._maze)) * i,
+                            self._HEIGHT // len(self._maze) * j,
+                        ),
+                        (
+                            self._WIDTH // len(self._maze) - 1,
+                            self._HEIGHT // len(self._maze) - 1,
+                        ),
+                    ),
+                )
         self._turns_left_text.render_to_screen(self._screen)
